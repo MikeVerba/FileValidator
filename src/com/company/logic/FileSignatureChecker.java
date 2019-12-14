@@ -3,6 +3,7 @@ package com.company.logic;
 import com.company.utils.FileSignatures;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,15 @@ public class FileSignatureChecker {
         int fileSignature = input.readInt();
         input.close();
 
-        if (fileSignature == FileSignatures.JPEG_SIGNATURE) {
+
+         if(Files.probeContentType(file.toPath()).equals("text/plain")){
+            String firstLineInHex = String.format("%040x", new BigInteger(readFirstLine(pathToFile).getBytes()));
+            if(firstLineInHex.contains(Integer.toHexString(fileSignature))){
+                return "TXT";
+            }
+        }
+
+         if (fileSignature == FileSignatures.JPEG_SIGNATURE) {
             return "JPEG";
         } else if(fileSignature == FileSignatures.PNG_SIGNATURE){
             return "PNG";
@@ -23,24 +32,18 @@ public class FileSignatureChecker {
             return "GIF";
         } else if(fileSignature == FileSignatures.PDF_SIGNATURE) {
             return "PDF";
-//        }else if(fileSignature = readFirstLine(pathToFile)){
-//            return "TXT"; todo implement checking .txt files - when magic number equals the first line of file
-//             then it is text/plain
         } else throw new IllegalArgumentException("Unsupported file format!");
     }
 
-
-    //todo for checking .txt files
-    public String readFirstLine(String pathToFile) {
+    private String readFirstLine(String pathToFile) {
 
         String firstLine = "";
         Path filePath = Paths.get(pathToFile);
         try {
             firstLine = Files.lines(filePath).findFirst().get();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("The file is not valid!!");
         }
-        System.out.println(firstLine);
         return firstLine;
     }
 }
