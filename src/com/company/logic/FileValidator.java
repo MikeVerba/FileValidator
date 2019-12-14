@@ -18,11 +18,6 @@ public class FileValidator {
 
         String fileSignature = fileSignatureChecker.checkFileSignature(path);
 
-//        System.out.println(contentTypeChecker.getContentType(path));
-//
-//        System.out.println(fileSignatureChecker.checkFileSignature(path));
-
-
         if(contentType.equals("image/gif") && fileSignature.equals("GIF")){
             return true;
         }
@@ -35,9 +30,11 @@ public class FileValidator {
         else if(contentType.equals("application/pdf") && fileSignature.equals("PDF")){
             return true;
         }
-        
-        //todo add logic to check .txt
+        else if(contentType.equals("text/plain") && fileSignature.equals("TXT")){
 
+            //todo implement checking .txt formats
+            return true;
+        }
         return false;
     }
 
